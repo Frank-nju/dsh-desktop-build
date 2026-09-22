@@ -67,6 +67,14 @@ Get-FileHash .\deepseek-harness-0.1.6-alpha.2-win-x64.exe -Algorithm SHA256
 > anyone without Feishu access. Use `production` (anonymous authentication) unless you are an
 > internal release operator — see [`docs/BUILD-RECORD.md`](docs/BUILD-RECORD.md#7b-the-one-bug-this-build-shipped-and-its-fix).
 
+> **The built commit has a protocol-handler defect that freezes the UI.** Its `dsh-app://` handler
+> serves only `hostname === 'app'`, so every shell-owned page (`update-dialog.html`,
+> `mandatory-update.html`, `policy-login-loading.html`) resolves to 404. The update dialog blurs the
+> product window's body *before* the overlay is shown, so a page that never loads leaves the window
+> **blurred and blocked by an invisible modal** — it renders and nothing can be clicked.
+> Upstream fixed this after the built commit; the fix is backported here.
+> See [`docs/BUILD-RECORD.md`](docs/BUILD-RECORD.md#7c-the-second-bug-every-dsh-appshell-page-404s).
+
 ---
 
 ## What the app actually is

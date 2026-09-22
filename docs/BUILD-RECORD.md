@@ -10,7 +10,7 @@ Built from the **official** upstream repository, using the **official** build me
 | Official command | `pnpm run package:desktop:win:x64:unsigned` |
 | Packaging run | `.desktop-build/packaging-runs/2026-09-22T04-31-02.199Z-pleFic` → `result.json` `{"success":true}` |
 | Wall clock | 12:31:02 → 12:45:35 (+08:00) ≈ **14m 33s** |
-| Upstream diff | **none** (only the git-ignored `apps/desktop/.env.windows` was added) |
+| Upstream diff | **2 local changes**: one upstream fix backported (§7c) + one labelled local deviation (§7d) |
 
 ## 1. Result
 
@@ -189,6 +189,81 @@ never constructed and the login window cannot exist. Verified the same way:
 
 **Lesson:** a launch-smoke test that only checks "the window rendered" passes on this bug. Read
 `IsWindowEnabled` on the main window, or send a `WM_NULL` round trip, to prove the UI is interactive.
+
+## 7c. The second bug: every `dsh-app://shell/*` page 404s
+
+Clicking **检查更新** reproduced the same "blurred and unclickable" state. That path is different
+from §7b and pointed at a separate defect.
+
+`update-dialog.ts` renders its confirmation through `createUpdateOverlay()`, which is shared with the
+product window and does two things before the overlay is shown:
+
+1. injects `body { filter: blur(2px) !important }` into the **product** window
+2. creates a `modal: true` child window sized to the parent's content bounds
+
+The overlay then loads `dsh-app://shell/update-dialog.html` — and the custom protocol handler in this
+commit only serves `hostname === 'app'`:
+
+```js
+protocol.handle(SCHEME, (request) => {
+  const url = new URL(request.url)
+  if (url.hostname === 'app') { /* web frontend */ }
+  return Promise.resolve(new Response(null, { status: 404 }))
+})
+```
+
+So the dialog page never loads. The overlay stays invisible while the parent is already blurred and
+blocked by an invisible modal — exactly "blurred and frozen". The same 404 explains why the
+*登录测试环境* window in §7b came up blank, and it breaks `mandatory-update.html` and
+`policy-login-loading.html` too.
+
+Verified two ways:
+
+- URL parsing: `new URL('dsh-app://shell/update-dialog.html')` → `hostname = "shell"` → falls to 404.
+  The unit test asserts the same URL (`tests/update-dialog.spec.ts`) but mocks `loadURL`, so the real
+  protocol was never exercised.
+- The pages **are** inside the artifact: `app.asar` contains `/renderer/update-dialog.html` (963 B),
+  `/renderer/mandatory-update.html`, `/renderer/policy-login-loading.html`, plus CSS/JS/SVG.
+
+**Upstream already fixed this.** Cloning `origin/master` shows the handler has gained the branch:
+
+```js
+// Shell-owned documents live in the application bundle and never pass through the Host.
+if (url.hostname === 'shell') return serveWebDocument(request, join(app.getAppPath(), 'renderer'))
+```
+
+The commit built here (`ddefc45`) predates that line and is 1299 commits behind master. The fix is
+backported verbatim, marked with a `BACKPORT (upstream master)` comment, and needs no other change —
+`renderer/**/*` is already in the electron-builder `files` list.
+
+**Lesson:** `registerSchemesAsPrivileged` + `protocol.handle` means a missing hostname branch is a
+silent 404, not a crash. Any page loaded over a custom scheme needs a test that resolves it through
+the real handler, not through a mocked `loadURL`.
+
+## 7d. Local deviation: "check failed" on a build with no update feed
+
+With §7c fixed, the dialog renders — and immediately reports *检查更新失败* with the technical detail
+`desktop update: this application has no packaged update source`.
+
+Cause, `update-coordinator.ts`:
+
+```js
+if (!this.enabled()) throw new Error('desktop update: this application has no packaged update source')
+```
+
+`enabled()` is false whenever `app-update.yml` is absent, which is exactly what an `--unsigned` build
+produces by design (the publish feed is `null`). So the menu item always fails on the very builds
+upstream creates for local installation testing. The absence is intentional; reporting it as a failure
+is not useful.
+
+**Local deviation** (marked `LOCAL DEVIATION from upstream` in the source):
+
+```js
+if (!this.enabled()) return this.setState({ phase: 'idle' })
+```
+
+`idle` is the state that means "no update available", so the dialog now reports the honest result.
+This does not enable updates, change any feed, or affect signed releases, which do have a source.
 
 ## 8. Files
 
