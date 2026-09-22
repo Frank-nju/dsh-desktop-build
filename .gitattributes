@@ -1,0 +1,6 @@
+# Normalize line endings so the repository reads correctly regardless of the checkout platform.
+* text=auto eol=lf
+
+# Keep the recorded build logs byte-stable: they are evidence, and a line-ending rewrite would
+# change their digests and diff noise.
+logs/** -text

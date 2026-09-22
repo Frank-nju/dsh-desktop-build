@@ -1,0 +1,11 @@
+# Build artifacts and caches — never committed (GitHub hard-caps files at 100 MB).
+node_modules/
+.cache/
+release-assets/
+verify/nsis-extract/
+*.log.bak
+
+# Upstream source clone and third-party reference repo live outside this repository.
+deepseek-harness/
+dsh-desktop/
+dsh-desktop-build/

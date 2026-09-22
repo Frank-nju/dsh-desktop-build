@@ -1,0 +1,30 @@
+{"time":"2026-09-22T04:31:02.238Z","pid":44128,"type":"stage-start","stage":"run build:official"}
+{"time":"2026-09-22T04:31:02.250Z","pid":44128,"type":"stage-spawn","stage":"run build:official","childPid":41924}
+{"time":"2026-09-22T04:34:49.492Z","pid":44128,"type":"stage-end","stage":"run build:official","code":0,"signal":null,"timedOut":false,"fatalObserved":false,"launchError":false,"outputError":false,"terminationError":false}
+{"time":"2026-09-22T04:34:49.497Z","pid":44128,"type":"stage-start","stage":"run release:pack --family dsh --out E:\\gcc\\dsh-build\\deepseek-harness\\apps\\desktop\\.desktop-build\\targets\\win-x64\\packed\\dsh"}
+{"time":"2026-09-22T04:34:49.508Z","pid":44128,"type":"stage-spawn","stage":"run release:pack --family dsh --out E:\\gcc\\dsh-build\\deepseek-harness\\apps\\desktop\\.desktop-build\\targets\\win-x64\\packed\\dsh","childPid":43420}
+{"time":"2026-09-22T04:36:57.287Z","pid":44128,"type":"stage-end","stage":"run release:pack --family dsh --out E:\\gcc\\dsh-build\\deepseek-harness\\apps\\desktop\\.desktop-build\\targets\\win-x64\\packed\\dsh","code":0,"signal":null,"timedOut":false,"fatalObserved":false,"launchError":false,"outputError":false,"terminationError":false}
+{"time":"2026-09-22T04:36:57.290Z","pid":44128,"type":"stage-start","stage":"--dir apps/desktop-host pack --pack-destination E:\\gcc\\dsh-build\\deepseek-harness\\apps\\desktop\\.desktop-build\\targets\\win-x64\\packed\\dsh"}
+{"time":"2026-09-22T04:36:57.300Z","pid":44128,"type":"stage-spawn","stage":"--dir apps/desktop-host pack --pack-destination E:\\gcc\\dsh-build\\deepseek-harness\\apps\\desktop\\.desktop-build\\targets\\win-x64\\packed\\dsh","childPid":48052}
+{"time":"2026-09-22T04:36:57.668Z","pid":44128,"type":"stage-end","stage":"--dir apps/desktop-host pack --pack-destination E:\\gcc\\dsh-build\\deepseek-harness\\apps\\desktop\\.desktop-build\\targets\\win-x64\\packed\\dsh","code":0,"signal":null,"timedOut":false,"fatalObserved":false,"launchError":false,"outputError":false,"terminationError":false}
+{"time":"2026-09-22T04:36:57.732Z","pid":44128,"type":"stage-start","stage":"run release:pack --family vendor --out E:\\gcc\\dsh-build\\deepseek-harness\\apps\\desktop\\.desktop-build\\targets\\win-x64\\packed\\vendor"}
+{"time":"2026-09-22T04:36:57.743Z","pid":44128,"type":"stage-spawn","stage":"run release:pack --family vendor --out E:\\gcc\\dsh-build\\deepseek-harness\\apps\\desktop\\.desktop-build\\targets\\win-x64\\packed\\vendor","childPid":24272}
+{"time":"2026-09-22T04:37:01.832Z","pid":44128,"type":"stage-end","stage":"run release:pack --family vendor --out E:\\gcc\\dsh-build\\deepseek-harness\\apps\\desktop\\.desktop-build\\targets\\win-x64\\packed\\vendor","code":0,"signal":null,"timedOut":false,"fatalObserved":false,"launchError":false,"outputError":false,"terminationError":false}
+{"time":"2026-09-22T04:37:01.834Z","pid":44128,"type":"stage-start","stage":"--dir native/system run build:ts"}
+{"time":"2026-09-22T04:37:01.843Z","pid":44128,"type":"stage-spawn","stage":"--dir native/system run build:ts","childPid":47020}
+{"time":"2026-09-22T04:37:02.744Z","pid":44128,"type":"stage-end","stage":"--dir native/system run build:ts","code":0,"signal":null,"timedOut":false,"fatalObserved":false,"launchError":false,"outputError":false,"terminationError":false}
+{"time":"2026-09-22T04:37:02.747Z","pid":44128,"type":"stage-start","stage":"--dir native/system/packages/entry pack --pack-destination E:\\gcc\\dsh-build\\deepseek-harness\\apps\\desktop\\.desktop-build\\targets\\win-x64\\packed\\landlock"}
+{"time":"2026-09-22T04:37:02.757Z","pid":44128,"type":"stage-spawn","stage":"--dir native/system/packages/entry pack --pack-destination E:\\gcc\\dsh-build\\deepseek-harness\\apps\\desktop\\.desktop-build\\targets\\win-x64\\packed\\landlock","childPid":42004}
+{"time":"2026-09-22T04:37:03.269Z","pid":44128,"type":"stage-end","stage":"--dir native/system/packages/entry pack --pack-destination E:\\gcc\\dsh-build\\deepseek-harness\\apps\\desktop\\.desktop-build\\targets\\win-x64\\packed\\landlock","code":0,"signal":null,"timedOut":false,"fatalObserved":false,"launchError":false,"outputError":false,"terminationError":false}
+{"time":"2026-09-22T04:37:03.271Z","pid":44128,"type":"stage-start","stage":"run prepare:runtime"}
+{"time":"2026-09-22T04:37:03.281Z","pid":44128,"type":"stage-spawn","stage":"run prepare:runtime","childPid":36788}
+{"time":"2026-09-22T04:38:40.095Z","pid":44128,"type":"stage-end","stage":"run prepare:runtime","code":0,"signal":null,"timedOut":false,"fatalObserved":false,"launchError":false,"outputError":false,"terminationError":false}
+{"time":"2026-09-22T04:38:40.097Z","pid":44128,"type":"stage-start","stage":"run prepare:packages"}
+{"time":"2026-09-22T04:38:40.107Z","pid":44128,"type":"stage-spawn","stage":"run prepare:packages","childPid":47912}
+{"time":"2026-09-22T04:38:46.399Z","pid":44128,"type":"stage-end","stage":"run prepare:packages","code":0,"signal":null,"timedOut":false,"fatalObserved":false,"launchError":false,"outputError":false,"terminationError":false}
+{"time":"2026-09-22T04:38:46.403Z","pid":44128,"type":"stage-start","stage":"run prepare:dsh"}
+{"time":"2026-09-22T04:38:46.413Z","pid":44128,"type":"stage-spawn","stage":"run prepare:dsh","childPid":34552}
+{"time":"2026-09-22T04:42:16.466Z","pid":44128,"type":"stage-end","stage":"run prepare:dsh","code":0,"signal":null,"timedOut":false,"fatalObserved":false,"launchError":false,"outputError":false,"terminationError":false}
+{"time":"2026-09-22T04:42:16.469Z","pid":44128,"type":"stage-start","stage":"exec electron-builder --config electron-builder.config.mjs --win --x64 --publish never"}
+{"time":"2026-09-22T04:42:16.480Z","pid":44128,"type":"stage-spawn","stage":"exec electron-builder --config electron-builder.config.mjs --win --x64 --publish never","childPid":48020}
+{"time":"2026-09-22T04:45:35.813Z","pid":44128,"type":"stage-end","stage":"exec electron-builder --config electron-builder.config.mjs --win --x64 --publish never","code":0,"signal":null,"timedOut":false,"fatalObserved":false,"launchError":false,"outputError":false,"terminationError":false}
