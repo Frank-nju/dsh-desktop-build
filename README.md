@@ -54,10 +54,18 @@ Both are **self-contained**: the target machine needs **no Node, no Python, no n
 
 ### SHA-256
 
+See the [release notes](../../releases/latest) for the current digests. Verify with:
+
+```powershell
+Get-FileHash .\deepseek-harness-0.1.6-alpha.2-win-x64.exe -Algorithm SHA256
 ```
-deepseek-harness-0.1.6-alpha.2-win-x64.exe          713A5A70AD9D2ACAE6509D767A143215804E65E994C48AB6E8D8458CA9BC8A2F
-deepseek-harness-0.1.6-alpha.2-win-x64-portable.zip  see release notes
-```
+
+> **Do not set `DSH_DESKTOP_AUTO_UPDATE_ENV=test` for a build you intend to hand to someone.**
+> The test deployment makes `resolveDesktopPolicyEnvironment` select `authentication: 'feishu-test'`,
+> which opens a modal *登录测试环境* login window. That modal **disables the main window**
+> (`enabled=False`), so the app launches, renders correctly, and is completely unclickable for
+> anyone without Feishu access. Use `production` (anonymous authentication) unless you are an
+> internal release operator — see [`docs/BUILD-RECORD.md`](docs/BUILD-RECORD.md#7b-the-one-bug-this-build-shipped-and-its-fix).
 
 ---
 
@@ -233,9 +241,9 @@ The build was not accepted on "exit code 0" alone:
   `<origin>/api/v0/check_client_update` with client-identity headers. It **fails open**: the initial
   state is `blocking: false` and transport/JSON/protocol failures retain it, so only an explicit
   server-side `code 40005` blocks the app. Offline and air-gapped machines work normally.
-- **This build points at the test deployment** (`DSH_DESKTOP_AUTO_UPDATE_ENV=test` →
-  `https://harness-test.deepseek.com`), per the official template. It therefore will not pull
-  production updates.
+- **`DSH_DESKTOP_AUTO_UPDATE_ENV` decides more than the updater.** It also selects the policy origin
+  *and the authentication mode* (`test` → `feishu-test` + a blocking login modal; `production` →
+  `anonymous`). The released artifacts use `production`. See limitation note above.
 - **The NSIS installer was not executed.** Structure was verified (valid PE, 15 files,
   311,158,983-byte payload, blockmap, uninstaller, embedded 7-Zip decoder). Installing modifies the
   system and was deliberately skipped; the **unpacked app was run and verified** instead.

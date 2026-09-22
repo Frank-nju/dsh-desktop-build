@@ -152,6 +152,44 @@ compile was needed), VS 2022 Build Tools + Windows SDK, WebView2 runtime, and wo
 - Version coupling is upstream-enforced: desktop and bundled dsh must match (`0.1.6-alpha.2`), else
   packaging aborts.
 
+## 7b. The one bug this build shipped, and its fix
+
+The first upload was packaged with `DSH_DESKTOP_AUTO_UPDATE_ENV=test`, taken straight from upstream's
+`.env.windows.example`. **The app launched, rendered correctly, and was completely unresponsive** —
+no click or keyboard input reached it.
+
+Cause, traced through Win32 window enumeration:
+
+```
+hwnd=... visible=True  enabled=True   modalOwner=True   title="登录测试环境"      <- blocking modal
+hwnd=... visible=True  enabled=False  modalOwner=False  title="DeepSeek Harness"  <- disabled parent
+```
+
+`resolveDesktopPolicyEnvironment` selects the origin by deployment and then **derives the
+authentication mode from it**:
+
+| deployment | policy origin | authentication |
+|---|---|---|
+| `test` | `DSH_DESKTOP_MANDATORY_UPDATE_TEST_ORIGIN` | **`feishu-test`** |
+| `production` | `DSH_DESKTOP_MANDATORY_UPDATE_PROD_ORIGIN` | **`anonymous`** |
+
+With `feishu-test`, `main.ts` constructs `DesktopPolicyTestAuth` (only when
+`policyConfig.authentication === 'feishu-test'`) and, on `authentication-required`, calls
+`queuePolicyAuthentication()` — which opens a Feishu login window. That window is a **modal child**,
+so Electron disables the parent: `enabled=False`. Without Feishu access the login can never complete,
+so the app stays unclickable forever.
+
+Fix: `DSH_DESKTOP_AUTO_UPDATE_ENV=production` in `apps/desktop/.env.windows`. Then `policyAuth` is
+never constructed and the login window cannot exist. Verified the same way:
+
+- exactly one visible top-level window (`DeepSeek Harness`), `enabled=True`
+- no window titled `登录测试环境`
+- `SendMessageTimeout(WM_NULL)` returns — the message pump is alive
+- official `smokePrimaryRuntime` still passes
+
+**Lesson:** a launch-smoke test that only checks "the window rendered" passes on this bug. Read
+`IsWindowEnabled` on the main window, or send a `WM_NULL` round trip, to prove the UI is interactive.
+
 ## 8. Files
 
 ```
