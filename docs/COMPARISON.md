@@ -5,7 +5,7 @@ and a purpose but almost no implementation.
 
 | # | Implementation | What it is |
 |---|---|---|
-| 1 | **This repository** | Builds upstream `apps/desktop` from monorepo **source**, unmodified, via the official command. |
+| 1 | **[`Frank-nju/dsh-desktop-build`](https://github.com/Frank-nju/dsh-desktop-build)** (this repository) | Builds upstream `apps/desktop` from monorepo **source**, unmodified, via the official command. |
 | 2 | [`Frank-nju/dsh-desktop`](https://github.com/Frank-nju/dsh-desktop) | A hand-written Electron shell that wraps the **published** harness. ~600 lines, not a monorepo build. |
 | 3 | [`zhanghj-ruc/dsh-desktop-build`](https://github.com/zhanghj-ruc/dsh-desktop-build) | A process record of building (1) with local patches. Studied for pitfalls; not a code dependency. |
 
